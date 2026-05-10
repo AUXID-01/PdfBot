@@ -1,12 +1,17 @@
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { Document } from "@langchain/core/documents";
+import pdf from "pdf-parse";
+import fs from "fs/promises";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { getCollection } from "./chroma";
 
 export async function ingestPDF(filePath: string, filename: string): Promise<{ chunkCount: number }> {
-  // 1. Load with PDFLoader — preserves page metadata
-  const loader = new PDFLoader(filePath);
-  const rawDocs = await loader.load();
+  // 1. Load the PDF buffer and parse it
+  const dataBuffer = await fs.readFile(filePath);
+  const data = await pdf(dataBuffer);
+  
+  // Create a LangChain document from the parsed text
+  const rawDocs = [new Document({ pageContent: data.text, metadata: { source: filename } })];
 
   // 2. Chunk with RecursiveCharacterTextSplitter
   // Why these values? 
