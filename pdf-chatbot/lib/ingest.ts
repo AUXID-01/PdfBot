@@ -31,7 +31,9 @@ export async function ingestPDF(filePath: string, filename: string): Promise<{ c
   const embeddingsArray = await embeddings.embedDocuments(texts);
 
   // 4. Upsert into ChromaDB with metadata
+  console.log("Connecting to ChromaDB...");
   const collection = await getCollection("pdf_docs");
+  console.log("Collection obtained. Preparing data for upsert...");
 
   const metadatas = docs.map((doc, i) => ({
     source: filename,
@@ -41,12 +43,20 @@ export async function ingestPDF(filePath: string, filename: string): Promise<{ c
 
   const ids = docs.map((_, i) => `${filename}-chunk-${i}`);
 
-  await collection.upsert({
-    ids,
-    embeddings: embeddingsArray,
-    metadatas,
-    documents: texts,
-  });
+  console.log(`Upserting ${ids.length} chunks into ChromaDB...`);
+  try {
+    await collection.upsert({
+      ids,
+      embeddings: embeddingsArray,
+      metadatas,
+      documents: texts,
+    });
+    console.log("ChromaDB upsert successful.");
+  } catch (dbError: any) {
+    console.error("ChromaDB upsert failed:", dbError);
+    throw new Error(`Database error: ${dbError.message}`);
+  }
+
 
   // 5. Return chunkCount
   return { chunkCount: docs.length };
