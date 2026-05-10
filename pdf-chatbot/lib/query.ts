@@ -1,4 +1,4 @@
-import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/huggingface_transformers";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf_inference";
 import { getCollection } from "./chroma";
 import Groq from "groq-sdk";
 
@@ -7,9 +7,10 @@ const groq = new Groq({
 });
 
 export async function answerQuestion(question: string) {
-  // 1. Embed the question using local HuggingFace Transformers
-  const embeddings = new HuggingFaceTransformersEmbeddings({
-    model: "Xenova/all-MiniLM-L6-v2",
+  // 1. Embed the question using HuggingFace Inference API
+  const embeddings = new HuggingFaceInferenceEmbeddings({
+    apiKey: process.env.HUGGINGFACE_API_KEY,
+    model: "sentence-transformers/all-MiniLM-L6-v2",
   });
   const queryEmbedding = await embeddings.embedQuery(question);
 
