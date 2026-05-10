@@ -1,6 +1,6 @@
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { getCollection } from "./chroma";
 
 export async function ingestPDF(filePath: string, filename: string): Promise<{ chunkCount: number }> {
@@ -21,8 +21,9 @@ export async function ingestPDF(filePath: string, filename: string): Promise<{ c
   
   const docs = await textSplitter.splitDocuments(rawDocs);
 
-  // 3. Embed with Local Transformers (No API Key needed!)
-  const embeddings = new HuggingFaceTransformersEmbeddings({
+  // 3. Embed with HuggingFace Inference API (Keeps deployment size small!)
+  const embeddings = new HuggingFaceInferenceEmbeddings({
+    apiKey: process.env.HUGGINGFACE_API_KEY,
     model: "sentence-transformers/all-MiniLM-L6-v2",
   });
 
