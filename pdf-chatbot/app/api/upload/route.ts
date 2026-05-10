@@ -58,7 +58,12 @@ export async function POST(request: NextRequest) {
       await unlink(tempFilePath).catch(() => {});
       console.error("Ingestion failed with error:", ingestionError);
       return NextResponse.json(
-        { error: "Failed to process and ingest PDF.", details: ingestionError.message },
+        { 
+          error: "Failed to process and ingest PDF.", 
+          details: ingestionError.message,
+          stack: ingestionError.stack,
+          fullError: JSON.stringify(ingestionError)
+        },
         { status: 500 }
       );
     }
