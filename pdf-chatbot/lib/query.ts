@@ -1,4 +1,4 @@
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf_inference";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { getCollection } from "./chroma";
 import Groq from "groq-sdk";
 
