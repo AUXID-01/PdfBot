@@ -1,50 +1,51 @@
 # 🤖 InsightAI - RAG Powered PDF Chatbot
 
-InsightAI is a high-performance, production-ready PDF chatbot built with **Next.js 15**, **Groq**, and **ChromaDB**. It uses Retrieval-Augmented Generation (RAG) to provide accurate answers based on your uploaded documents.
+InsightAI is a high-performance, production-ready PDF chatbot built with **Next.js 16**, **Groq**, and **ChromaDB**. It uses Retrieval-Augmented Generation (RAG) to provide accurate answers based on your uploaded documents.
 
 ## ✨ Features
-- **PDF Ingestion**: Upload documents up to 20MB.
+- **PDF Ingestion**: Upload documents up to 20MB with stable cloud parsing.
 - **RAG Architecture**: Intelligent chunking and semantic search for context-aware answers.
 - **Lightning Fast**: Powered by Groq's LPU for near-instant AI responses.
-- **Local Embeddings**: Uses HuggingFace Transformers running locally on the server.
+- **Optimized for Cloud**: Uses HuggingFace Inference API to keep the serverless footprint small and fast.
 - **Glassmorphic UI**: A modern, premium dark-mode interface.
 
 ## 🛠️ Tech Stack
-- **Framework**: [Next.js 15](https://nextjs.org) (App Router)
-- **LLM**: [Groq](https://groq.com) (Llama-3)
-- **Vector Database**: [ChromaDB](https://www.trychroma.com/)
-- **Embeddings**: HuggingFace (all-MiniLM-L6-v2)
+- **Framework**: [Next.js 16](https://nextjs.org) (App Router)
+- **LLM**: [Groq](https://groq.com) (Llama-3.3-70b)
+- **Vector Database**: [ChromaDB](https://www.trychroma.com/) (Hosted on Render)
+- **Embeddings**: HuggingFace Inference API (`all-MiniLM-L6-v2`)
 - **Styling**: Tailwind CSS + Glassmorphism
 
-## 🚀 Getting Started
+## 🚀 Deployment
 
-### 1. Prerequisites
-- Node.js 18+ 
-- A running ChromaDB instance (local or hosted)
-- A Groq API Key
+### 1. Database (Render)
+Deployed using the official `chromadb/chroma:latest` Docker image.
+- **Instance**: Free Tier
+- **Port**: 8000
+- **Health Check**: `/api/v1/heartbeat`
 
-### 2. Environment Setup
-Create a `.env.local` file in the root directory:
-```env
-GROQ_API_KEY=your_groq_key_here
-CHROMA_PATH=http://127.0.0.1:8000
-```
+### 2. Frontend (Vercel)
+Deployed as a Next.js 16 application.
+- **Root Directory**: `pdf-chatbot`
+- **Environment Variables**:
+    - `CHROMA_PATH`: Your Render service URL.
+    - `GROQ_API_KEY`: Your Groq API key.
+    - `HUGGINGFACE_API_KEY`: Your HuggingFace Access Token.
 
-### 3. Installation
+## 📦 Installation (Local)
+
+1. **Clone and Install**:
 ```bash
 npm install
 ```
 
-### 4. Run Locally
+2. **Environment Setup**:
+Create a `.env.local` with your `CHROMA_PATH`, `GROQ_API_KEY`, and `HUGGINGFACE_API_KEY`.
+
+3. **Run Dev**:
 ```bash
 npm run dev
 ```
 
-## 🌐 Deployment (Vercel)
-1. **Host ChromaDB**: Deploy ChromaDB on a VPS (Render, Railway, etc.) as Vercel doesn't support local persistent storage.
-2. **Environment Variables**: Add `GROQ_API_KEY` and your hosted `CHROMA_PATH` in Vercel settings.
-3. **Deploy**: Import the repo to Vercel and click deploy.
-
 ---
 Built with ❤️ by [AUXID-01](https://github.com/AUXID-01)
-
